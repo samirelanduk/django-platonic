@@ -14,3 +14,5 @@ class FormTests(TestCase):
          form.favourite_number,
          form.date_of_birth
         ))
+        for field in form:
+            pass#self.assertIsNone(field.value)

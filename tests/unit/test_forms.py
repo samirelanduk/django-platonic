@@ -11,18 +11,13 @@ class FormTest(TestCase):
         self.Form = FormSub
         self.field1 = Mock(Field)
         self.field2 = Mock(Field)
+        self.Form.f1, self.Form.f2, self.Form.x = self.field1, self.field2, "a"
 
 
 
 class FormCreationTests(FormTest):
 
-    def test_can_create_empty_form(self):
-        form = self.Form()
-        self.assertEqual(form._fields, [])
-
-
     def test_can_create_form_with_fields(self):
-        self.Form.f1, self.Form.f2, self.Form.x = self.field1, self.field2, "a"
         form = self.Form()
         self.assertEqual(form._fields, [self.field1, self.field2])
         self.assertIs(form.f1, self.field1)
@@ -33,15 +28,22 @@ class FormCreationTests(FormTest):
 class FormReprTests(FormTest):
 
     def test_form_repr_1_field(self):
-        self.Form.f1 = self.field1
         form = self.Form()
+        form._fields = [1]
         self.assertEqual(repr(form), "<FormSub (1 field)>")
 
 
     def test_form_repr_2_fields(self):
-        self.Form.f1, self.Form.f2 = self.field1, self.field2
         form = self.Form()
         self.assertEqual(repr(form), "<FormSub (2 fields)>")
+
+
+
+class FormIterationTests(FormTest):
+
+    def test_form_is_iterable(self):
+        form = self.Form()
+        self.assertEqual(list(iter(form)), form._fields)
 
 
 

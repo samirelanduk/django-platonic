@@ -1,7 +1,4 @@
-from collections import OrderedDict
 from .fields import Field
-import inspect
-
 
 class Form:
 
@@ -21,6 +18,10 @@ class Form:
          len(self._fields),
          "" if len(self._fields) == 1 else "s"
         )
+
+
+    def __iter__(self):
+        return iter(self._fields)
 
 
     @property
