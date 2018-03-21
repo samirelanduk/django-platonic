@@ -15,6 +15,14 @@ class Form:
         return form
 
 
+    def __repr__(self):
+        return "<{} ({} field{})>".format(
+         self.__class__.__name__,
+         len(self._fields),
+         "" if len(self._fields) == 1 else "s"
+        )
+
+
     @property
     def fields(self):
         return tuple(self._fields)

@@ -30,6 +30,21 @@ class FormCreationTests(FormTest):
 
 
 
+class FormReprTests(FormTest):
+
+    def test_form_repr_1_field(self):
+        self.Form.f1 = self.field1
+        form = self.Form()
+        self.assertEqual(repr(form), "<FormSub (1 field)>")
+
+
+    def test_form_repr_2_fields(self):
+        self.Form.f1, self.Form.f2 = self.field1, self.field2
+        form = self.Form()
+        self.assertEqual(repr(form), "<FormSub (2 fields)>")
+
+
+
 class FormFieldTests(FormTest):
 
     def test_can_get_fields(self):
