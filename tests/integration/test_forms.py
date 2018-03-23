@@ -4,7 +4,7 @@ from .examples import *
 
 class FormTests(TestCase):
 
-    def test_blank_forms(self):
+    def test_basic_blank_forms(self):
         # Create a basic blank form
         form = QuestionForm()
 
@@ -20,6 +20,12 @@ class FormTests(TestCase):
         self.assertEqual(form.favourite_number.name, "favourite_number")
         self.assertEqual(form.date_of_birth.name, "date_of_birth")
 
+        self.assertEqual(form.full_name.label, "Full Name:")
+        self.assertEqual(form.favourite_number.label, "Favourite Number:")
+        self.assertEqual(form.date_of_birth.label, "Date Of Birth:")
+
+
+    def test_fleshed_out_black_forms(self):
         # Create a fleshed out blank form
         form = FullQuestionForm()
         self.assertEqual(form.full_name.label, "What's you full name?")

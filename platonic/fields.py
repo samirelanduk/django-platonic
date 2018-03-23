@@ -21,7 +21,7 @@ class Field:
 
     @property
     def label(self):
-        return self._label
+        return self.label_from_name() if self._label is None else self._label
 
 
     @label.setter
@@ -29,3 +29,9 @@ class Field:
         if not isinstance(label, str):
             raise TypeError(f"Label {label} is not a string")
         self._label = label
+
+
+    def label_from_name(self):
+        words = map(str.title, self._name.split("_"))
+        label = " ".join(words)
+        return f"{label}:"

@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import Mock, patch
 from platonic.fields import Field
 
 class FieldCreationTests(TestCase):
@@ -48,6 +49,15 @@ class LabelPropertyTests(TestCase):
         self.assertEqual(field._label, field.label)
 
 
+    @patch("platonic.fields.Field.label_from_name")
+    def test_can_generate_label_when_none(self, mock_label):
+        mock_label.return_value = "XYZ"
+        field = Field()
+        self.assertEqual(field.label, "XYZ")
+        mock_label.assert_called_with()
+
+
+
     def test_can_set_label(self):
         field = Field(label="xyz")
         field.label = "bbb"
@@ -58,3 +68,18 @@ class LabelPropertyTests(TestCase):
         field = Field(label="xyz")
         with self.assertRaises(TypeError):
             field.label = 100
+
+
+
+class LabelGenerationTests(TestCase):
+
+    def test_can_return_simple_label(self):
+        field = Field()
+        field._name = "xyz"
+        self.assertEqual(field.label_from_name(), "Xyz:")
+
+
+    def test_can_return_label_with_underscores(self):
+        field = Field()
+        field._name = "xyz_abc_123"
+        self.assertEqual(field.label_from_name(), "Xyz Abc 123:")
