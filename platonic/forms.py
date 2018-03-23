@@ -9,6 +9,7 @@ class Form:
             if isinstance(attribute_obj, Field):
                 form.__dict__[attribute_name] = attribute_obj
                 form._fields.append(attribute_obj)
+                attribute_obj._name = attribute_name
         return form
 
 

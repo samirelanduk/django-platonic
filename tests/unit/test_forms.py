@@ -22,6 +22,8 @@ class FormCreationTests(FormTest):
         self.assertEqual(form._fields, [self.field1, self.field2])
         self.assertIs(form.f1, self.field1)
         self.assertIs(form.f2, self.field2)
+        self.assertEqual(form.f1._name, "f1")
+        self.assertEqual(form.f2._name, "f2")
 
 
 
