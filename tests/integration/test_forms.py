@@ -24,6 +24,12 @@ class FormTests(TestCase):
         self.assertEqual(form.favourite_number.label, "Favourite Number:")
         self.assertEqual(form.date_of_birth.label, "Date Of Birth:")
 
+        # Fields are unique to instances
+        form2 = QuestionForm()
+        self.assertIsNot(form.full_name, form2.full_name)
+        self.assertIsNot(form.favourite_number, form2.favourite_number)
+        self.assertIsNot(form.date_of_birth, form2.date_of_birth)
+
 
     def test_fleshed_out_black_forms(self):
         # Create a fleshed out blank form

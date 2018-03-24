@@ -24,6 +24,16 @@ class FieldCreationTests(TestCase):
 
 
 
+class FieldCopyingTests(TestCase):
+
+    def test_can_copy_field(self):
+        field = Field(label="Field label")
+        field2 = field.copy()
+        self.assertIsNot(field, field2)
+        self.assertEqual(field.__dict__, field2.__dict__)
+
+
+
 class NamePropertyTests(TestCase):
 
     def test_can_get_field_name(self):

@@ -11,6 +11,8 @@ class FormTest(TestCase):
         self.Form = FormSub
         self.field1 = Mock(Field)
         self.field2 = Mock(Field)
+        self.field1.copy.return_value = self.field1
+        self.field2.copy.return_value = self.field2
         self.Form.f1, self.Form.f2, self.Form.x = self.field1, self.field2, "a"
 
 
@@ -24,6 +26,8 @@ class FormCreationTests(FormTest):
         self.assertIs(form.f2, self.field2)
         self.assertEqual(form.f1._name, "f1")
         self.assertEqual(form.f2._name, "f2")
+        self.field1.copy.assert_called_with()
+        self.field2.copy.assert_called_with()
 
 
 

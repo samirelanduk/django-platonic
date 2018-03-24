@@ -9,6 +9,12 @@ class Field:
         self._label = label
 
 
+    def copy(self):
+        new = Field()
+        new.__dict__ = self.__dict__
+        return new
+
+
     @property
     def name(self):
         return self._name
