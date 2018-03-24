@@ -36,6 +36,10 @@ class Form:
         )
 
 
+    def __str__(self):
+        return self.render()
+
+
     def __iter__(self):
         return iter(self._fields)
 
@@ -47,3 +51,12 @@ class Form:
         :rtype" ``tuple``"""
 
         return tuple(self._fields)
+
+
+    def render(self):
+        """Renders the form as HTML.
+
+        :rtype: ``str`"""
+
+        inputs = "\n".join([field.render() for field in self._fields])
+        return f"<form>\n{inputs}\n</form>"

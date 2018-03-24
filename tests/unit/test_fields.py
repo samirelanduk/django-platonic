@@ -41,7 +41,7 @@ class FieldReprTests(TestCase):
 class FieldStrTests(TestCase):
 
     @patch("platonic.fields.Field.render")
-    def test_basic_field_str(self, mock_render):
+    def test_field_str(self, mock_render):
         mock_render.return_value = "SSS"
         field = Field()
         self.assertEqual(str(field), "SSS")

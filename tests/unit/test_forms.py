@@ -45,6 +45,17 @@ class FormReprTests(FormTest):
 
 
 
+class FormStrTests(FormTest):
+
+    @patch("platonic.forms.Form.render")
+    def test_form_str(self, mock_render):
+        mock_render.return_value = "SSS"
+        form = self.Form()
+        self.assertEqual(str(form), "SSS")
+        mock_render.assert_called_with()
+
+
+
 class FormIterationTests(FormTest):
 
     def test_form_is_iterable(self):
@@ -58,3 +69,22 @@ class FormFieldTests(FormTest):
     def test_can_get_fields(self):
         form = self.Form()
         self.assertEqual(form.fields, tuple(form._fields))
+
+
+
+class FormRenderingTests(FormTest):
+
+    def setUp(self):
+        FormTest.setUp(self)
+        self.field1.render.return_value = "AAA"
+        self.field2.render.return_value = "BBB"
+
+
+    def test_can_render_form(self):
+        form = self.Form()
+        self.assertEqual(
+         form.render(),
+         "<form>\nAAA\nBBB\n</form>"
+        )
+        self.field1.render.assert_called_with()
+        self.field2.render.assert_called_with()

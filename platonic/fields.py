@@ -105,5 +105,9 @@ class Field:
 
 
     def render(self):
+        """Renders the field as HTML.
+
+        :rtype: ``str`"""
+        
         name = f' name="{self._name}"' if self._name else ""
         return f'<input type="text"{name}>'
