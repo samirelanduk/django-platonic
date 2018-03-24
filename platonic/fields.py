@@ -30,6 +30,10 @@ class Field:
         return f"<Field{name}{value}>"
 
 
+    def __str__(self):
+        return self.render()
+
+
     def copy(self):
         """Creates a copy of this Field, with all the same attributes.
 
@@ -98,3 +102,8 @@ class Field:
         words = map(str.title, self._name.split("_"))
         label = " ".join(words)
         return f"{label}:"
+
+
+    def render(self):
+        name = f' name="{self._name}"' if self._name else ""
+        return f'<input type="text"{name}>'

@@ -38,6 +38,17 @@ class FieldReprTests(TestCase):
 
 
 
+class FieldStrTests(TestCase):
+
+    @patch("platonic.fields.Field.render")
+    def test_basic_field_str(self, mock_render):
+        mock_render.return_value = "SSS"
+        field = Field()
+        self.assertEqual(str(field), "SSS")
+        mock_render.assert_called_with()
+
+
+
 class FieldCopyingTests(TestCase):
 
     def test_can_copy_field(self):
@@ -134,3 +145,17 @@ class LabelGenerationTests(TestCase):
         field = Field()
         field._name = "xyz_abc_123"
         self.assertEqual(field.label_from_name(), "Xyz Abc 123:")
+
+
+
+class FieldRenderingTests(TestCase):
+
+    def test_basic_field_rendering(self):
+        field = Field()
+        self.assertEqual(field.render(), '<input type="text">')
+
+
+    def test_field_with_name_rendering(self):
+        field = Field()
+        field._name = "N"
+        self.assertEqual(field.render(), '<input type="text" name="N">')

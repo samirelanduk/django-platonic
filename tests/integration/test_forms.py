@@ -39,3 +39,17 @@ class FormTests(TestCase):
         self.assertEqual(form.date_of_birth.label, "When were you manufactured?")
         form.full_name.label = "Give your name:"
         self.assertEqual(form.full_name.label, "Give your name:")
+
+
+    def test_forms_html(self):
+        form = QuestionForm()
+        self.assertEqual(
+         form.full_name.render(), '<input type="text" name="full_name">'
+        )
+        self.assertEqual(
+         form.favourite_number.render(),
+         '<input type="text" name="favourite_number">'
+        )
+        self.assertEqual(
+         str(form.date_of_birth), '<input type="text" name="date_of_birth">'
+        )
