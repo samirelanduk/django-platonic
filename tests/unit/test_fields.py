@@ -24,6 +24,20 @@ class FieldCreationTests(TestCase):
 
 
 
+class FieldReprTests(TestCase):
+
+    def test_basic_field_repr(self):
+        field = Field()
+        self.assertEqual(repr(field), "<Field>")
+
+
+    def test_field_repr_with_attributes(self):
+        field = Field(label="Field label")
+        field._name, field._value = "N", "V"
+        self.assertEqual(repr(field), "<Field name='N' value='V'>")
+
+
+
 class FieldCopyingTests(TestCase):
 
     def test_can_copy_field(self):
@@ -40,6 +54,33 @@ class NamePropertyTests(TestCase):
         field = Field()
         field._name = "xyz"
         self.assertEqual(field._name, field.name)
+
+
+    def test_can_set_field_name(self):
+        field = Field()
+        field.name = "bbb"
+        self.assertEqual(field._name, "bbb")
+
+
+    def test_field_name_must_be_str(self):
+        field = Field()
+        with self.assertRaises(TypeError):
+            field.name = 100
+
+
+    def test_field_name_must_be_valid_str(self):
+        field = Field()
+        field.name = "name-right"
+        field.name = "name_right"
+        field.name = "NAMERIGHT"
+        with self.assertRaises(ValueError):
+            field.name = "name wrong"
+        with self.assertRaises(ValueError):
+            field.name = "name@wrong"
+        with self.assertRaises(ValueError):
+            field.name = "name\x00wrong"
+        with self.assertRaises(ValueError):
+            field.name = "name.wrong"
 
 
 
