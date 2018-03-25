@@ -14,14 +14,19 @@ class Field:
     The name and value of a field are both ``None`` when a field is created.
 
     :param str label: The label of the field.
-    :raises TypeError: if the label is not a string."""
+    :param str input_type: The input type of the field when rendered as HTML.
+    :raises TypeError: if the label is not a string.
+    :raises TypeError: if the input_type is not a string."""
 
-    def __init__(self, label=None):
+    def __init__(self, label=None, input_type="text"):
         if label is not None and not isinstance(label, str):
             raise TypeError(f"Label {label} is not a string")
+        if not isinstance(input_type, str):
+            raise TypeError(f"Input type {input_type} is not a string")
         self._name = None
         self._value = None
         self._label = label
+        self._input_type = input_type
 
 
     def __repr__(self):
@@ -104,10 +109,27 @@ class Field:
         return f"{label}:"
 
 
+    @property
+    def input_type(self):
+        """The input type of the Field when rendered as HTML.
+
+        :raises TypeError: if you try and set the input_type to be a non-string.
+        :rtype: ``str``"""
+
+        return self._input_type
+
+
+    @input_type.setter
+    def input_type(self, input_type):
+        if not isinstance(input_type, str):
+            raise TypeError(f"Input type {input_type} is not a string")
+        self._input_type = input_type
+
+
     def render(self):
         """Renders the field as HTML.
 
         :rtype: ``str`"""
-        
+
         name = f' name="{self._name}"' if self._name else ""
-        return f'<input type="text"{name}>'
+        return f'<input type="{self._input_type}"{name}>'

@@ -48,14 +48,14 @@ class FormTests(TestCase):
         )
         self.assertEqual(
          form.favourite_number.render(),
-         '<input type="text" name="favourite_number">'
+         '<input type="number" name="favourite_number">'
         )
         self.assertEqual(
-         str(form.date_of_birth), '<input type="text" name="date_of_birth">'
+         str(form.date_of_birth), '<input type="date" name="date_of_birth">'
         )
         self.assertEqual(
          form.render().replace("\n", ""),
          '<form><input type="text" name="full_name">'
-         '<input type="text" name="favourite_number">'
-         '<input type="text" name="date_of_birth"></form>'
+         '<input type="number" name="favourite_number">'
+         '<input type="date" name="date_of_birth"></form>'
         )

@@ -9,6 +9,7 @@ class FieldCreationTests(TestCase):
         self.assertIsNone(field._value)
         self.assertIsNone(field._name)
         self.assertIsNone(field._label)
+        self.assertEqual(field._input_type, "text")
 
 
     def test_can_create_field_with_label(self):
@@ -16,11 +17,25 @@ class FieldCreationTests(TestCase):
         self.assertIsNone(field._value)
         self.assertIsNone(field._name)
         self.assertEqual(field._label, "Field label")
+        self.assertEqual(field._input_type, "text")
+
+
+    def test_can_create_field_with_input_type(self):
+        field = Field(input_type="number")
+        self.assertIsNone(field._value)
+        self.assertIsNone(field._name)
+        self.assertIsNone(field._label)
+        self.assertEqual(field._input_type, "number")
 
 
     def test_field_label_must_be_str(self):
         with self.assertRaises(TypeError):
             Field(label=100)
+
+
+    def test_field_type_must_be_str(self):
+        with self.assertRaises(TypeError):
+            Field(input_type=100)
 
 
 
@@ -148,11 +163,31 @@ class LabelGenerationTests(TestCase):
 
 
 
+class InputTypePropertyTests(TestCase):
+
+    def test_can_get_field_input_type(self):
+        field = Field(input_type="xyz")
+        self.assertEqual(field._input_type, field.input_type)
+
+
+    def test_can_set_field_input_type(self):
+        field = Field(input_type="xyz")
+        field.input_type = "bbb"
+        self.assertEqual(field._input_type, "bbb")
+
+
+    def test_field_name_must_be_str(self):
+        field = Field(input_type="xyz")
+        with self.assertRaises(TypeError):
+            field.input_type = 100
+
+
+
 class FieldRenderingTests(TestCase):
 
     def test_basic_field_rendering(self):
-        field = Field()
-        self.assertEqual(field.render(), '<input type="text">')
+        field = Field(input_type="xyz")
+        self.assertEqual(field.render(), '<input type="xyz">')
 
 
     def test_field_with_name_rendering(self):
