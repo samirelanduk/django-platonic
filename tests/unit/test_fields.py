@@ -10,6 +10,7 @@ class FieldCreationTests(TestCase):
         self.assertIsNone(field._name)
         self.assertIsNone(field._label)
         self.assertEqual(field._input_type, "text")
+        self.assertEqual(field._html_attrs, {})
 
 
     def test_can_create_field_with_label(self):
@@ -18,6 +19,7 @@ class FieldCreationTests(TestCase):
         self.assertIsNone(field._name)
         self.assertEqual(field._label, "Field label")
         self.assertEqual(field._input_type, "text")
+        self.assertEqual(field._html_attrs, {})
 
 
     def test_can_create_field_with_input_type(self):
@@ -26,6 +28,16 @@ class FieldCreationTests(TestCase):
         self.assertIsNone(field._name)
         self.assertIsNone(field._label)
         self.assertEqual(field._input_type, "number")
+        self.assertEqual(field._html_attrs, {})
+
+
+    def test_can_create_field_with_html_attributes(self):
+        field = Field(html_attrs={"a": "b"})
+        self.assertIsNone(field._value)
+        self.assertIsNone(field._name)
+        self.assertIsNone(field._label)
+        self.assertEqual(field._input_type, "text")
+        self.assertEqual(field._html_attrs, {"a": "b"})
 
 
     def test_field_label_must_be_str(self):
@@ -36,6 +48,21 @@ class FieldCreationTests(TestCase):
     def test_field_type_must_be_str(self):
         with self.assertRaises(TypeError):
             Field(input_type=100)
+
+
+    def test_field_html_attrs_must_be_dict(self):
+        with self.assertRaises(TypeError):
+            Field(html_attrs=100)
+
+
+    def test_field_html_attrs_must_be_valid(self):
+        with self.assertRaises(ValueError):
+            Field(html_attrs={100: "val"})
+        with self.assertRaises(ValueError):
+            Field(html_attrs={True: "val"})
+        with self.assertRaises(ValueError):
+            Field(html_attrs={"key": 100})
+        Field(html_attrs={"key": True})
 
 
 
@@ -183,6 +210,14 @@ class InputTypePropertyTests(TestCase):
 
 
 
+class HtmlAttrsPropertyTests(TestCase):
+
+    def test_can_get_html_attrs(self):
+        field = Field(html_attrs={"a": "b"})
+        self.assertIs(field._html_attrs, field.html_attrs)
+
+
+
 class FieldRenderingTests(TestCase):
 
     def test_basic_field_rendering(self):
@@ -208,3 +243,8 @@ class FieldRenderingTests(TestCase):
          field.render(),
          '<label for="id_N">LLL</label>\n<input type="text" name="N" id="id_N">'
         )
+
+
+    def test_field_rendering_with_attribures(self):
+        field = Field(html_attrs={"a": "b", "c": True, "d": False})
+        self.assertEqual(field.render(), '<input type="text" a="b" c>')

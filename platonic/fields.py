@@ -18,15 +18,21 @@ class Field:
     :raises TypeError: if the label is not a string.
     :raises TypeError: if the input_type is not a string."""
 
-    def __init__(self, label=None, input_type="text"):
+    def __init__(self, label=None, input_type="text", html_attrs=None):
         if label is not None and not isinstance(label, str):
             raise TypeError(f"Label {label} is not a string")
         if not isinstance(input_type, str):
             raise TypeError(f"Input type {input_type} is not a string")
+        if html_attrs is not None and not isinstance(html_attrs, dict):
+            raise TypeError(f"HTML attributes {html_attrs} is not a dict")
+        for k, v in html_attrs.items() if html_attrs else {}:
+            if not isinstance(k, str) or not isinstance(v, (str, bool)):
+                raise ValueError(f"{k}:{v} is not valid")
         self._name = None
         self._value = None
         self._label = label
         self._input_type = input_type
+        self._html_attrs = {} if html_attrs is None else html_attrs
 
 
     def __repr__(self):
@@ -119,6 +125,15 @@ class Field:
         return self._input_type
 
 
+    @property
+    def html_attrs(self):
+        """The HTML attributes of the Field.
+
+        :rtype: ``dict``"""
+
+        return self._html_attrs
+
+
     @input_type.setter
     def input_type(self, input_type):
         if not isinstance(input_type, str):
@@ -135,4 +150,7 @@ class Field:
         id_ = f' id="id_{self._name}"' if self._name else ""
         for_ = f' for="id_{self._name}"' if self._name else ""
         label = f"<label{for_}>{self._label}</label>\n" if self._label else ""
-        return f'{label}<input type="{self._input_type}"{name}{id_}>'
+        attrs = ""
+        for k, v in self._html_attrs.items():
+            if v: attrs += f' {k}' if isinstance(v, bool) else f' {k}="{v}"'
+        return f'{label}<input type="{self._input_type}"{name}{id_}{attrs}>'

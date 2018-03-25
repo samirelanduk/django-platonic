@@ -72,7 +72,8 @@ class FormTests(TestCase):
          '<label for="id_full_name">What\'s you full name?</label>'
          '<input type="text" name="full_name" id="id_full_name">'
          '<label for="id_favourite_number">You got a favourite number?</label>'
-         '<input type="number" name="favourite_number" id="id_favourite_number">'
+         '<input type="number" name="favourite_number" id="id_favourite_number"'
+         ' placeholder="A number" autocomplete="off" readonly>'
          '<label for="id_date_of_birth">When were you manufactured?</label>'
          '<input type="date" name="date_of_birth" id="id_date_of_birth"></form>'
         )
