@@ -40,6 +40,15 @@ class FieldCreationTests(TestCase):
         self.assertEqual(field._html_attrs, {"a": "b"})
 
 
+    def test_can_create_field_with_initial_value(self):
+        field = Field(initial="III")
+        self.assertEqual(field._value, "III")
+        self.assertIsNone(field._name)
+        self.assertIsNone(field._label)
+        self.assertEqual(field._input_type, "text")
+        self.assertEqual(field._html_attrs, {})
+
+
     def test_field_label_must_be_str(self):
         with self.assertRaises(TypeError):
             Field(label=100)
@@ -229,6 +238,12 @@ class FieldRenderingTests(TestCase):
         field = Field()
         field._name = "N"
         self.assertEqual(field.render(), '<input type="text" name="N" id="id_N">')
+
+
+    def test_field_with_value_rendering(self):
+        field = Field()
+        field._value = "V"
+        self.assertEqual(field.render(), '<input type="text" value="V">')
 
 
     def test_field_with_label_rendering(self):
