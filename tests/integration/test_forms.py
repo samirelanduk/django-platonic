@@ -55,7 +55,7 @@ class FormTests(TestCase):
         )
         self.assertEqual(
          form.render().replace("\n", ""),
-         '<form><input type="text" name="full_name">'
+         '<form method="POST"><input type="text" name="full_name">'
          '<input type="number" name="favourite_number">'
          '<input type="date" name="date_of_birth"></form>'
         )

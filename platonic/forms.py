@@ -59,4 +59,4 @@ class Form:
         :rtype: ``str`"""
 
         inputs = "\n".join([field.render() for field in self._fields])
-        return f"<form>\n{inputs}\n</form>"
+        return f"<form method=\"POST\">\n{inputs}\n</form>"

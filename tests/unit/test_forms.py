@@ -84,7 +84,7 @@ class FormRenderingTests(FormTest):
         form = self.Form()
         self.assertEqual(
          form.render(),
-         "<form>\nAAA\nBBB\n</form>"
+         "<form method=\"POST\">\nAAA\nBBB\n</form>"
         )
         self.field1.render.assert_called_with()
         self.field2.render.assert_called_with()
