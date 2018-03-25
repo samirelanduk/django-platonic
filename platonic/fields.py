@@ -45,7 +45,7 @@ class Field:
         :rtype: ``Field``"""
 
         new = Field()
-        new.__dict__ = self.__dict__
+        new.__dict__ = self.__dict__.copy()
         return new
 
 
@@ -132,4 +132,7 @@ class Field:
         :rtype: ``str`"""
 
         name = f' name="{self._name}"' if self._name else ""
-        return f'<input type="{self._input_type}"{name}>'
+        id_ = f' id="id_{self._name}"' if self._name else ""
+        for_ = f' for="id_{self._name}"' if self._name else ""
+        label = f"<label{for_}>{self._label}</label>\n" if self._label else ""
+        return f'{label}<input type="{self._input_type}"{name}{id_}>'

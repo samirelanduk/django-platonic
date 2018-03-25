@@ -193,4 +193,18 @@ class FieldRenderingTests(TestCase):
     def test_field_with_name_rendering(self):
         field = Field()
         field._name = "N"
-        self.assertEqual(field.render(), '<input type="text" name="N">')
+        self.assertEqual(field.render(), '<input type="text" name="N" id="id_N">')
+
+
+    def test_field_with_label_rendering(self):
+        field = Field(label="LLL")
+        self.assertEqual(field.render(), '<label>LLL</label>\n<input type="text">')
+
+
+    def test_field_with_label_and_name_rendering(self):
+        field = Field(label="LLL")
+        field._name = "N"
+        self.assertEqual(
+         field.render(),
+         '<label for="id_N">LLL</label>\n<input type="text" name="N" id="id_N">'
+        )

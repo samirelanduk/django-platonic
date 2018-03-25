@@ -44,18 +44,35 @@ class FormTests(TestCase):
     def test_forms_html(self):
         form = QuestionForm()
         self.assertEqual(
-         form.full_name.render(), '<input type="text" name="full_name">'
+         form.full_name.render(),
+         '<input type="text" name="full_name" id="id_full_name">'
         )
         self.assertEqual(
          form.favourite_number.render(),
-         '<input type="number" name="favourite_number">'
+         '<input type="number" name="favourite_number" id="id_favourite_number">'
         )
         self.assertEqual(
-         str(form.date_of_birth), '<input type="date" name="date_of_birth">'
+         str(form.date_of_birth),
+         '<input type="date" name="date_of_birth" id="id_date_of_birth">'
         )
         self.assertEqual(
          form.render().replace("\n", ""),
-         '<form method="POST"><input type="text" name="full_name">'
-         '<input type="number" name="favourite_number">'
-         '<input type="date" name="date_of_birth"></form>'
+         '<form method="POST">'
+         '<input type="text" name="full_name" id="id_full_name">'
+         '<input type="number" name="favourite_number" id="id_favourite_number">'
+         '<input type="date" name="date_of_birth" id="id_date_of_birth"></form>'
+        )
+
+
+    def test_fleshed_out_form_html(self):
+        form = FullQuestionForm()
+        self.assertEqual(
+         form.render().replace("\n", ""),
+         '<form method="POST">'
+         '<label for="id_full_name">What\'s you full name?</label>'
+         '<input type="text" name="full_name" id="id_full_name">'
+         '<label for="id_favourite_number">You got a favourite number?</label>'
+         '<input type="number" name="favourite_number" id="id_favourite_number">'
+         '<label for="id_date_of_birth">When were you manufactured?</label>'
+         '<input type="date" name="date_of_birth" id="id_date_of_birth"></form>'
         )
