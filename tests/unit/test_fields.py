@@ -6,14 +6,142 @@ class FieldCreationTests(TestCase):
 
     def test_can_create_field(self):
         field = Field()
-        self.assertIsNone(field._value)
         self.assertIsNone(field._name)
         self.assertIsNone(field._label)
-        self.assertEqual(field._input_type, "text")
-        self.assertEqual(field._html_attrs, {})
+
+
+    def test_can_create_field_with_name(self):
+        field = Field(name="NNN")
+        self.assertEqual(field._name, "NNN")
+        self.assertIsNone(field._label)
 
 
     def test_can_create_field_with_label(self):
+        field = Field(label="LLL")
+        self.assertIsNone(field._name)
+        self.assertEqual(field._label, "LLL")
+
+
+    def test_field_name_must_be_str(self):
+        with self.assertRaises(TypeError):
+            Field(name=100)
+
+
+    def test_field_name_must_be_valid_str(self):
+        Field(name="name-right"), Field(name="name_right"), Field(name="RIGHT")
+        with self.assertRaises(ValueError): Field(name="name wrong")
+        with self.assertRaises(ValueError): Field(name="name@wrong")
+        with self.assertRaises(ValueError): Field(name="name\x00wrong")
+        with self.assertRaises(ValueError): Field(name="name.wrong")
+
+
+    def test_field_label_must_be_str(self):
+        with self.assertRaises(TypeError):
+            Field(label=100)
+
+
+
+
+class NameTests(TestCase):
+
+    def test_can_get_field_name(self):
+        field = Field(name="xyz")
+        self.assertIs(field._name, field.name)
+
+
+    def test_can_set_field_name(self):
+        field = Field(name="xyz")
+        field.name = "bbb"
+        self.assertEqual(field._name, "bbb")
+
+
+    def test_field_name_must_be_str(self):
+        field = Field(name="xyz")
+        with self.assertRaises(TypeError):
+            field.name = 100
+
+
+    def test_field_name_must_be_valid_str(self):
+        field = Field(name="xyz")
+        for right in "name-right", "name_right", "NAMERIGHT":
+            field.name = right
+        for wrong in "name wrong", "name@wrong", "name\x00wrong", "name.wrong":
+            with self.assertRaises(ValueError):
+                field.name = wrong
+
+
+
+class LabelTests(TestCase):
+
+    def test_can_get_label(self):
+        field = Field(label="xyz")
+        self.assertIs(field._label, field.label)
+
+
+    def test_can_set_label(self):
+        field = Field(label="xyz")
+        field.label = "bbb"
+        self.assertEqual(field._label, "bbb")
+
+
+    def test_field_label_must_be_str(self):
+        field = Field(label="xyz")
+        with self.assertRaises(TypeError):
+            field.label = 100
+
+
+
+class LabelGenerationTests(TestCase):
+
+    def test_can_return_label_when_no_name(self):
+        field = Field()
+        self.assertEqual(field.label_from_name(), "")
+
+
+    def test_can_return_simple_label(self):
+        field = Field(name="xyz")
+        self.assertEqual(field.label_from_name(), "Xyz:")
+
+
+    def test_can_return_label_with_underscores(self):
+        field = Field(name="xyz_abc_123")
+        self.assertEqual(field.label_from_name(), "Xyz Abc 123:")
+
+
+
+class RawExtractionTests(TestCase):
+
+    def test_can_get_value_when_no_name(self):
+        field = Field()
+        self.assertIsNone(field.get_raw_from_data_dict({"a": "b"}))
+
+
+    def test_can_get_value_using_name(self):
+        field = Field(name="a")
+        self.assertEqual(field.get_raw_from_data_dict({"a": "b", "c": "d"}), "b")
+
+
+    def test_can_get_missing_value_using_name(self):
+        field = Field(name="x")
+        self.assertIsNone(field.get_raw_from_data_dict({"a": "b", "c": "d"}))
+
+
+
+class StringToPythonTests(TestCase):
+
+    def test_string_becomes_string(self):
+        field = Field()
+        self.assertEqual(field.to_python("abc"), "abc")
+
+
+    def test_none_becomes_empty_string(self):
+        field = Field()
+        self.assertEqual(field.to_python(None), "")
+
+
+
+
+    '''def test_can_create_field_with_label(self):
         field = Field(label="Field label")
         self.assertIsNone(field._value)
         self.assertIsNone(field._name)
@@ -110,39 +238,6 @@ class FieldCopyingTests(TestCase):
 
 
 
-class NamePropertyTests(TestCase):
-
-    def test_can_get_field_name(self):
-        field = Field()
-        field._name = "xyz"
-        self.assertEqual(field._name, field.name)
-
-
-    def test_can_set_field_name(self):
-        field = Field()
-        field.name = "bbb"
-        self.assertEqual(field._name, "bbb")
-
-
-    def test_field_name_must_be_str(self):
-        field = Field()
-        with self.assertRaises(TypeError):
-            field.name = 100
-
-
-    def test_field_name_must_be_valid_str(self):
-        field = Field()
-        field.name = "name-right"
-        field.name = "name_right"
-        field.name = "NAMERIGHT"
-        with self.assertRaises(ValueError):
-            field.name = "name wrong"
-        with self.assertRaises(ValueError):
-            field.name = "name@wrong"
-        with self.assertRaises(ValueError):
-            field.name = "name\x00wrong"
-        with self.assertRaises(ValueError):
-            field.name = "name.wrong"
 
 
 
@@ -184,18 +279,7 @@ class LabelPropertyTests(TestCase):
 
 
 
-class LabelGenerationTests(TestCase):
 
-    def test_can_return_simple_label(self):
-        field = Field()
-        field._name = "xyz"
-        self.assertEqual(field.label_from_name(), "Xyz:")
-
-
-    def test_can_return_label_with_underscores(self):
-        field = Field()
-        field._name = "xyz_abc_123"
-        self.assertEqual(field.label_from_name(), "Xyz Abc 123:")
 
 
 
@@ -262,4 +346,4 @@ class FieldRenderingTests(TestCase):
 
     def test_field_rendering_with_attribures(self):
         field = Field(html_attrs={"a": "b", "c": True, "d": False})
-        self.assertEqual(field.render(), '<input type="text" a="b" c>')
+        self.assertEqual(field.render(), '<input type="text" a="b" c>')'''

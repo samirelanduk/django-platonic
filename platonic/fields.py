@@ -3,6 +3,114 @@ import re
 class Field:
     """A field represents a data entry component in a form.
 
+    A field is described by its name and its label. Its name is an internal
+    identifier, and its label is a human readable description.
+
+    Value properties:
+        - value (a validated, Python object - this will only ever be a validated
+        object)
+        - pre_value (a Python object that has not been validated)
+    """
+
+    def __init__(self, name=None, label=None):
+        if label is not None and not isinstance(label, str):
+            raise TypeError(f"Label {label} is not a string")
+        if name is not None and not isinstance(name, str):
+            raise TypeError(f"Name {name} is not a string")
+        if name is not None and re.compile(r"[^a-zA-Z0-9\-\_]").search(name):
+            raise ValueError(f"'{name}' is not a valid name")
+        self._name = name
+        self._label = label
+
+
+    @property
+    def name(self):
+        """The name of the field - its internal identifier.
+
+        :raises TypeError: if you try to set a name that isn't a string.
+        :raises ValueError: if the name has invalid characters - letters,\
+        numbers, dashes, and underscores are fine.
+        :rtype: ``str``"""
+
+        return self._name
+
+
+    @name.setter
+    def name(self, name):
+        if not isinstance(name, str):
+            raise TypeError(f"Name {name} is not a string")
+        if re.compile(r"[^a-zA-Z0-9\-\_]").search(name):
+            raise ValueError(f"'{name}' is not a valid name")
+        self._name = name
+
+
+    @property
+    def label(self):
+        """The label of the field - the human understandable description of
+        the field. If there isn't one, one will be generated from the name.
+
+        :raises TypeError: if you try and set the label to be a non-string.
+        :rtype: ``str``"""
+
+        return self.label_from_name() if self._label is None else self._label
+
+
+    @label.setter
+    def label(self, label):
+        if not isinstance(label, str):
+            raise TypeError(f"Label {label} is not a string")
+        self._label = label
+
+
+    def label_from_name(self):
+        """Generates a label from the field's name. Underscores will be turned
+        into spaces, and words will be title cased.
+
+        :rtype: ``str``"""
+
+        if not self._name: return ""
+        words = map(str.title, self._name.split("_"))
+        label = " ".join(words)
+        return f"{label}:"
+
+
+    def get_raw_from_data_dict(self, d):
+        """Takes a POST dictionary and gets the string which corresponds to this
+        field.
+
+        :param dict d: The POST data dictionary.
+        :rtype: ``str``"""
+
+        return d.get(self._name)
+
+
+    def to_python(self, raw):
+        """Converts a raw string from a data dictionary into a valid string.
+
+        :param str raw: The raw string to convert.
+        :rtype: ``str``"""
+        
+        return "" if raw is None else str(raw)
+
+
+'''import re
+
+class Field:
+    """A field represents a data entry component in a form.
+
+    Name, label
+
+    Value, proposed_value
+
+    get_value_from_data_dict()
+    validate_proposed_value()
+    value_to_html_string()
+
+
+    <input type="text|number|checkbox|etc>
+    <input type="radio">
+    <select>
+
     All fields have a name and a label. The name is its internal identifier,
     and becomes the ``name`` attribute in the HTML. The label is the human
     readable description of the field, and becomes the ``<label>`` content.
@@ -55,25 +163,7 @@ class Field:
         return new
 
 
-    @property
-    def name(self):
-        """The name of the field - its internal identifier.
 
-        :raises TypeError: if you try to set a name that isn't a string.
-        :raises ValueError: if the name has invalid characters - letters,\
-        numbers, dashes, and underscores are fine.
-        :rtype: ``str``"""
-
-        return self._name
-
-
-    @name.setter
-    def name(self, name):
-        if not isinstance(name, str):
-            raise TypeError(f"Name {name} is not a string")
-        if re.compile(r"[^a-zA-Z0-9\-\_]").search(name):
-            raise ValueError(f"'{name}' is not a valid name")
-        self._name = name
 
 
     @property
@@ -86,33 +176,10 @@ class Field:
         return self._value
 
 
-    @property
-    def label(self):
-        """The label of the field - the human understandable description of
-        the field. If there isn't one, one will be generated from the name.
-
-        :raises TypeError: if you try and set the label to be a non-string.
-        :rtype: ``str``"""
-
-        return self.label_from_name() if self._label is None else self._label
 
 
-    @label.setter
-    def label(self, label):
-        if not isinstance(label, str):
-            raise TypeError(f"Label {label} is not a string")
-        self._label = label
 
 
-    def label_from_name(self):
-        """Generates a label from the field's name. Underscores will be turned
-        into spaces, and words will be title cased.
-
-        :rtype: ``str``"""
-
-        words = map(str.title, self._name.split("_"))
-        label = " ".join(words)
-        return f"{label}:"
 
 
     @property
@@ -155,3 +222,4 @@ class Field:
         for k, v in self._html_attrs.items():
             if v: attrs += f' {k}' if isinstance(v, bool) else f' {k}="{v}"'
         return f'{label}<input type="{self._input_type}"{name}{value}{id_}{attrs}>'
+'''
